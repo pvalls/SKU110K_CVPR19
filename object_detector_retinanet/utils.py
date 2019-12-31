@@ -39,11 +39,11 @@ def create_folder(path):
 
 
 def root_dir():
-    if platform.system() == 'Linux':
-        return os.path.join(os.getenv('HOME'), 'Documents', 'SKU110K')
-    elif platform.system() == 'Windows':
-        return os.path.abspath('C:/Users/{}/Documents/SKU110K/'.format(os.getenv('username')))
-
+    # if platform.system() == 'Linux':
+    #     return os.path.join(os.getenv('HOME'), 'Documents', 'SKU110K')
+    # elif platform.system() == 'Windows':
+    #     return os.path.abspath('C:/Users/{}/Documents/SKU110K/'.format(os.getenv('username')))
+    return '/home/plyzer-ai/repos/ai-damm/apps/detection-model/SKU110K_CVPR19'
 
 def image_path():
     return os.path.join(root_dir(), IMG_FOLDER)

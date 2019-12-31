@@ -116,3 +116,9 @@ dmypy.json
 .pyre/
 
 .idea/
+
+images/
+annotations/
+
+
+
