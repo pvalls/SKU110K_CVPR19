@@ -20,6 +20,13 @@ import numpy as np
 import cv2
 from PIL import Image
 
+# Added to avoid training error: 
+# File "/lib/python3.6/site-packages/PIL/ImageFile.py", line 249, in load
+#     "(%d bytes not processed)" % len(b)
+# OSError: image file is truncated (nn bytes not processed)
+from PIL import ImageFile
+ImageFile.LOAD_TRUNCATED_IMAGES = True
+
 from .transform import change_transform_origin
 
 
@@ -29,7 +36,12 @@ def read_image_bgr(path):
     Args
         path: Path to the image.
     """
-    image = np.asarray(Image.open(path).convert('RGB'))
+    #Modified to avoid training error "OSError: image file is truncated"
+    try: 
+        image = np.asarray(Image.open(path).convert('RGB'))
+    except:
+        pass
+    
     return image[:, :, ::-1].copy()
 
 
