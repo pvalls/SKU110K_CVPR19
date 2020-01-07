@@ -122,3 +122,8 @@ annotations/
 
 snapshot/
 logs/
+
+.DS_Store
+.vscode/
+res_images_iou/
+plyzer-sku.txt
