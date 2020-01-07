@@ -111,7 +111,11 @@ class DuplicateMerger(object):
     def find_new_candidates(self, contours, heat_map, data, original_detection_centers, image):
         candidates = []
         for contour_i, contour in enumerate(contours[1]):
-            contour_bounding_rect = cv2.boundingRect(contour)
+            
+            try:
+                contour_bounding_rect = cv2.boundingRect(numpy.array(contour, dtype=numpy.float32))
+            except:
+                continue
 
             contour_bbox = extract_boxes_from_edge_boxes(numpy.array(contour_bounding_rect))[0]
             box_width = contour_bbox[BOX.X2] - contour_bbox[BOX.X1]

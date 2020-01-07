@@ -120,5 +120,5 @@ dmypy.json
 images/
 annotations/
 
-
-
+snapshot/
+logs/
