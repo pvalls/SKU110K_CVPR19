@@ -127,3 +127,7 @@ logs/
 .vscode/
 res_images_iou/
 plyzer-sku.txt
+images-sku/
+annotations/annotations-sku/
+images-carrefour/
+

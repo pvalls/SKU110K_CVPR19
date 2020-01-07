@@ -95,7 +95,7 @@ def predict(
         if save_path is not None:
             create_folder(save_path)
 
-            draw_annotations(raw_image, generator.load_annotations(i), label_to_name=generator.label_to_name)
+            # draw_annotations(raw_image, generator.load_annotations(i), label_to_name=generator.label_to_name)
             draw_detections(raw_image, np.asarray(filtered_boxes), np.asarray(filtered_scores),
                             np.asarray(filtered_labels), color=(0, 0, 255))
 
