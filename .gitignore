@@ -128,6 +128,11 @@ logs/
 res_images_iou/
 plyzer-sku.txt
 images-sku/
+annotations-sku/
 annotations/annotations-sku/
 images-carrefour/
+results/
+
+
+DAMM-dataset/*
 

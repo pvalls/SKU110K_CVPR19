@@ -197,7 +197,9 @@ class CSVGenerator(Generator):
         """
         self.image_names = []
         self.image_data = {}
-        self.base_dir = base_dir
+
+        # self.base_dir = base_dir
+        self.base_dir = None
 
         # Take base_dir from annotations file if not explicitly specified.
         if self.base_dir is None:
@@ -251,7 +253,8 @@ class CSVGenerator(Generator):
     def image_path(self, image_index):
         """ Returns the image path for image_index.
         """
-        return os.path.join(self.base_dir, self.image_names[image_index])
+        # return os.path.join(self.base_dir, self.image_names[image_index])
+        return os.path.join(self.image_names[image_index])
 
     def image_aspect_ratio(self, image_index):
         """ Compute the aspect ratio for an image with image_index.

@@ -7,7 +7,7 @@ __author__ = 'roeiherz'
 
 FILE_EXISTS_ERROR = (17, 'File exists')
 
-IMG_FOLDER = 'images'
+
 ANNOTATION_FOLDER = 'annotations'
 DEBUG_MODE = False #'ubuntu' not in os.environ['HOME']
 if DEBUG_MODE:
@@ -47,7 +47,9 @@ def root_dir():
     return '/Users/polvalls/repos/ai-damm/apps/detection-model/SKU110K_CVPR19'
 
 def image_path():
-    return os.path.join(root_dir(), IMG_FOLDER)
+    # IMG_FOLDER = 'images'
+    # return os.path.join(root_dir(), IMG_FOLDER)
+    return os.path.join('')
 
 
 def annotation_path():

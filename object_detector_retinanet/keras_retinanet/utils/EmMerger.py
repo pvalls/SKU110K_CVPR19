@@ -360,7 +360,7 @@ class DuplicateMerger(object):
         return new_candidates
 
 
-def merge_detections(image_name, results):
+def merge_detections(image_name, results, image_path):
 #    project = 'SKU_dataset'
     result_df = pandas.DataFrame()
     result_df['x1'] = results[:, 0].astype(int)
@@ -383,7 +383,7 @@ def merge_detections(image_name, results):
 #    project = result_df['project'].iloc[0]
     image_name = result_df['image_name'].iloc[0]
     if pixel_data is None:
-        pixel_data = read_image_bgr(os.path.join(root_dir(),  image_name))
+        pixel_data = read_image_bgr(os.path.join(image_path))
 
     filtered_data = duplicate_merger.filter_duplicate_candidates(result_df, pixel_data)
     return filtered_data

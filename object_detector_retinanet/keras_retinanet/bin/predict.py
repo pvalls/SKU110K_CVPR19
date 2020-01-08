@@ -146,7 +146,8 @@ def main(args=None):
         generator,
         model,
         score_threshold=args.score_threshold,
-        save_path=os.path.join(root_dir(), 'res_images_iou'),
+        # save_path=os.path.join(root_dir(), 'res_images_iou'),
+        save_path = os.path.join(generator.base_dir, "detection_result_images"),
         hard_score_rate=hard_score_rate
     )
 

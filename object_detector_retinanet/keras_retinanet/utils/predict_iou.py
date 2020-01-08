@@ -78,7 +78,7 @@ def predict(
         results = np.concatenate(
             [image_boxes, np.expand_dims(image_scores, axis=1), np.expand_dims(image_hard_scores, axis=1),
              np.expand_dims(image_labels, axis=1)], axis=1)
-        filtered_data = EmMerger.merge_detections(image_name, results)
+        filtered_data = EmMerger.merge_detections(image_name, results, generator.image_path(i))
         filtered_boxes = []
         filtered_scores = []
         filtered_labels = []
@@ -108,7 +108,7 @@ def predict(
         print('{}/{}'.format(i + 1, generator.size()), end='\r')
 
     # Save annotations csv file
-    with open(res_file, 'wb') as fl_csv:
+    with open(res_file, 'w') as fl_csv:
         writer = csv.writer(fl_csv)
         writer.writerows(csv_data_lst)
     print("Saved output.csv file")
