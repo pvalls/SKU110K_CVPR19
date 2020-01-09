@@ -16,16 +16,14 @@ def run_detection():
 
     # Create csv annotation files for each folder and store path to csv_file_paths
     for image_folder_path in image_folder_paths:
-        csv_file_paths.append(create_csv(image_folder_path, ['jpeg']))
+        csv_file_paths.append(create_csv(image_folder_path, ['jpeg', 'jpg']))
 
 
     print("running \"$ export PYTHONPATH=$(pwd)...\" ")
-    os.system("export PYTHONPATH=$(pwd)")
-
 
     for csv_file_path in csv_file_paths:
         
-        run_predict_command = 'python -u object_detector_retinanet/keras_retinanet/bin/predict.py'
+        run_predict_command = 'export PYTHONPATH=$(pwd) && python -u object_detector_retinanet/keras_retinanet/bin/predict.py'
 
         run_predict_flags = " csv --annotations " + csv_file_path + " " + weight_file_path
         
