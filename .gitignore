@@ -121,6 +121,7 @@ images/
 annotations/
 
 snapshot/
+snapshots/
 logs/
 
 .DS_Store

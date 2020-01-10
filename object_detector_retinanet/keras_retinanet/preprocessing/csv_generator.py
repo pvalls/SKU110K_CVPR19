@@ -98,7 +98,7 @@ def _read_images(csv_and_images_dir):
     project_imgs = os.listdir(csv_and_images_dir)
 
     print("Loading images...")
-    for image in  project_imgs:
+    for image in project_imgs:
         try:
             img_file = os.path.join(csv_and_images_dir, image)
             # Check images exists
@@ -111,7 +111,6 @@ def _read_images(csv_and_images_dir):
             # Image shape
             height, width = get_image_size(img_file)
             result[img_file] = {"width": width, "height": height}
-
         except Exception as e:
             print("Error: {} in image: {}".format(str(e), img_file))
             continue
