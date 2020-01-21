@@ -98,7 +98,7 @@ def predict(
 
             # draw_annotations(raw_image, generator.load_annotations(i), label_to_name=generator.label_to_name)
             draw_detections(raw_image, np.asarray(filtered_boxes), np.asarray(filtered_scores),
-                            np.asarray(filtered_labels), color=(0, 0, 255))
+                            np.asarray(filtered_labels), color=(0, 255, 0))
 
             cv2.imwrite(os.path.join(save_path, '{}.png'.format(i)), raw_image)
 
