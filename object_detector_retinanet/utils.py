@@ -46,11 +46,6 @@ def root_dir():
     # return '/home/plyzer-ai/repos/ai-damm/apps/detection-model/SKU110K_CVPR19'
     return '/Users/polvalls/repos/ai-damm/apps/detection-model/SKU110K_CVPR19'
 
-def image_path():
-    # IMG_FOLDER = 'images'
-    # return os.path.join(root_dir(), IMG_FOLDER)
-    return os.path.join('')
-
 
 def annotation_path():
     return os.path.join(root_dir(), ANNOTATION_FOLDER)
