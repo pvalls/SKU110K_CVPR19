@@ -94,7 +94,6 @@ def _read_images(csv_and_images_dir):
     #             continue
 
     result = {}
-
     project_imgs = os.listdir(csv_and_images_dir)
 
     print("Loading images...")
@@ -185,6 +184,17 @@ def _read_annotations(csv_reader, classes, base_dir, image_existence):
         result[img_file].append({'x1': x1, 'x2': x2, 'y1': y1, 'y2': y2, 'class': class_name})
     return result
 
+def get_image_data(image_folder_path):
+
+    image_data = {}
+
+    for file_path in os.listdir(image_folder_path):
+
+        formats = ['jpg', 'jpeg', 'png', 'tiff'] 
+        if os.path.basename(file_path).split('.')[-1] in formats:
+            image_data[os.path.join(image_folder_path, file_path)] = [{'class': 'object', 'x1': 0, 'x2': 0, 'y1': 0, 'y2': 0}]
+
+    return image_data
 
 def _open_for_csv(path):
     """ Open a file with flags suitable for csv.reader.
@@ -252,6 +262,123 @@ class CSVGenerator(Generator):
         self.image_names = list(self.image_data.keys())
 
         super(CSVGenerator, self).__init__(**kwargs)
+
+    def size(self):
+        """ Size of the dataset.
+        """
+        return len(self.image_names)
+
+    def num_classes(self):
+        """ Number of classes in the dataset.
+        """
+        return max(self.classes.values()) + 1
+
+    def name_to_label(self, name):
+        """ Map name to label.
+        """
+        return self.classes[name]
+
+    def label_to_name(self, label):
+        """ Map label to name.
+        """
+        return self.labels[label]
+
+    def image_path(self, image_index):
+        """ Returns the image path for image_index.
+        """
+        # return os.path.join(self.base_dir, self.image_names[image_index])
+        return os.path.join(self.image_names[image_index])
+
+    def image_aspect_ratio(self, image_index):
+        """ Compute the aspect ratio for an image with image_index.
+        """
+
+        image = self.image_existence.get(self.image_path(image_index), None)
+        if image is None:
+            print("Error: Image path {} is not existed".format(self.image_path(image_index)))
+
+        # return float(2448) / float(3264)
+        return float(image['width']) / float(image['height'])
+
+    def load_image(self, image_index):
+        """ Load an image at the image_index.
+        """
+        return read_image_bgr(self.image_path(image_index))
+
+    def load_annotations(self, image_index):
+        """ Load annotations for an image_index.
+        """
+        path = self.image_names[image_index]
+        annots = self.image_data[path]
+        boxes = np.zeros((len(annots), 5))
+
+        for idx, annot in enumerate(annots):
+            class_name = annot['class']
+            boxes[idx, 0] = float(annot['x1'])
+            boxes[idx, 1] = float(annot['y1'])
+            boxes[idx, 2] = float(annot['x2'])
+            boxes[idx, 3] = float(annot['y2'])
+            boxes[idx, 4] = self.name_to_label(class_name)
+
+        return boxes
+class FOLDERGenerator(Generator):
+    """ Generate data for a custom CSV dataset.
+
+    See https://github.com/fizyr/keras-retinanet#csv-datasets for more information.
+    """
+
+    def __init__(
+            self,
+            image_folder_path,
+            csv_class_file,
+            base_dir=None,
+            **kwargs
+    ):
+        """ Initialize a CSV data generator.
+
+        Args
+            image_folder_path: Path to the CSV annotations file.
+            csv_class_file: Path to the CSV classes file.
+            base_dir: Directory w.r.t. where the files are to be searched (defaults to the directory containing the image_folder_path).
+        """
+        self.image_names = []
+        self.image_data = {}
+
+        # self.base_dir = base_dir
+        # self.base_dir = None
+
+        # Take base_dir from annotations file if not explicitly specified.
+        # if self.base_dir is None:
+        #     self.base_dir = image_folder_path
+        self.base_dir = image_folder_path
+
+        # parse the provided class file
+        try:
+            with _open_for_csv(csv_class_file) as file:
+                self.classes = _read_classes(csv.reader(file, delimiter=','))
+        except ValueError as e:
+            raise_from(ValueError('invalid CSV class file: {}: {}'.format(csv_class_file, e)), None)
+
+        self.labels = {}
+        for key, value in self.classes.items():
+            self.labels[value] = key
+
+        # build mappings for existence
+        self.image_existence = _read_images(self.base_dir)
+
+        # csv with img_path, x1, y1, x2, y2, class_name
+        # try:
+        #     with _open_for_csv(image_folder_path) as file:
+        #         self.image_data = _read_annotations(csv.reader(file, delimiter=','), self.classes, self.base_dir,
+        #                                             self.image_existence)
+        # except ValueError as e:
+        #     raise_from(ValueError('invalid CSV annotations file: {}: {}'.format(image_folder_path, e)), None)
+        self.image_data = get_image_data(image_folder_path)
+
+
+        self.image_names = list(self.image_data.keys())
+
+        super(FOLDERGenerator, self).__init__(**kwargs)
 
     def size(self):
         """ Size of the dataset.

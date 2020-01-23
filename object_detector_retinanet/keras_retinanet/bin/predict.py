@@ -11,7 +11,7 @@ import tensorflow as tf
 sys.path.append(os.path.join(os.getcwd(), 'detection_model/SKU110K_CVPR19'))
 
 from object_detector_retinanet.keras_retinanet import models
-from object_detector_retinanet.keras_retinanet.preprocessing.csv_generator import CSVGenerator
+from object_detector_retinanet.keras_retinanet.preprocessing.csv_generator import FOLDERGenerator
 from object_detector_retinanet.keras_retinanet.utils.predict_iou import predict
 from object_detector_retinanet.keras_retinanet.utils.keras_version import check_keras_version
 from object_detector_retinanet.utils import annotation_path, root_dir
@@ -25,12 +25,12 @@ def get_session():
     return tf.Session(config=config)
 
 
-def create_generator(args):
+def create_generator(args, image_folder_path):
     """ Create generators for evaluation.
     """
     if args.dataset_type == 'csv':
-        validation_generator = CSVGenerator(
-            args.annotations,
+        validation_generator = FOLDERGenerator(
+            image_folder_path,
             args.classes,
             image_min_side=args.image_min_side,
             image_max_side=args.image_max_side,
@@ -80,7 +80,7 @@ def parse_args(args):
     return parser.parse_args(args)
 
 
-def main(image_folder_path: str, detection_save_folder: str, csv_file_path: str, model_wights_path: str,
+def main(image_folder_path: str, detection_save_folder: str, model_wights_path: str,
                        classes=None,
                        hard_score_rate = 0.5,
                        backbone = 'resnet50',
@@ -94,14 +94,13 @@ def main(image_folder_path: str, detection_save_folder: str, csv_file_path: str,
     # parse arguments
     if args is None:
         # args = sys.argv[1:]
-        args = ["--model", model_wights_path, 'csv', '--annotations', csv_file_path]
-
+        args = ["--model", model_wights_path, 'csv']
 
     args = parse_args(args)
 
     # fill args with function parameters initialized with defaults
-    if args.annotations is None:
-        args.annotations = csv_file_path
+    # if args.annotations is None:
+    #     args.annotations = csv_file_path
 
     if args.hard_score_rate is None:
         args.hard_score_rate = hard_score_rate
@@ -111,7 +110,7 @@ def main(image_folder_path: str, detection_save_folder: str, csv_file_path: str,
         args.model = model_wights_path
 
     if args.base_dir is None:
-        args.base_dir = os.path.dirname(csv_file_path)
+        args.base_dir = image_folder_path
 
     if args.backbone is None:
         args.backbone = backbone
@@ -156,7 +155,7 @@ def main(image_folder_path: str, detection_save_folder: str, csv_file_path: str,
         os.makedirs(args.save_path)
 
     # create the generator
-    generator = create_generator(args)
+    generator = create_generator(args, args.base_dir)
 
     # load the model
     print('Loading model, this may take a second...')
