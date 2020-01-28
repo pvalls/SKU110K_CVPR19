@@ -8,17 +8,22 @@ from typing import *
 from detection_model.SKU110K_CVPR19.object_detector_retinanet.keras_retinanet.bin.predict import main
 
 
-def run_detection(image_folder_path: str, detection_save_folder: str):
+def run_detection(image_folder_path: str, detection_save_folder: str) -> str:
     """Master script to run SKU110K retail object detection on all images in image_folder_path
     
     Arguments:
-        image_folder_path {str} -- path to the image folder 
+        image_folder_path {str} -- path to the image folder
+        detection_save_folder {str} -- path where to save detection results
+    
+    Returns:
+        return detection_csv_results_file_path {str} -- path to detection results csv file
     """
 
     model_wights_path = os.path.join(os.getcwd(), 'detection_model/SKU110K_CVPR19/model_weights/iou_resnet50_csv_03.h5')
 
-    main(image_folder_path, detection_save_folder, model_wights_path)
+    detection_csv_results_file_path = main(image_folder_path, detection_save_folder, model_wights_path)
 
+    return detection_csv_results_file_path
 
 # Needs to be updated in relation to the changes in predict.py argparser
 def run_detection_from_bash(image_folder_path: str, detection_save_folder: str):
@@ -44,12 +49,16 @@ def run_detection_from_bash(image_folder_path: str, detection_save_folder: str):
 
 
 
-def create_csv(image_folder_path: str, formats: list):
+def create_csv(image_folder_path: str, formats: list) -> str:
     """Create a CSV file to be used as input argument for the SKU110K product detector
-       This function is not necessary anymore since SKU prediciton was updated so it does not need the csv file
+       This function is not necessary anymore since SKU prediciton was updated not to need the csv file
+    
     Arguments:
         image_folder_path {str} -- path to folder containing the images.
         formats {list[str]} -- List of strings containing the allowed image format extensions (e.g 'jpeg') 
+    
+    Returns:
+        str -- generated csv_file_path
     """
     
     image_folder_basename = os.path.basename(os.path.normpath(image_folder_path))

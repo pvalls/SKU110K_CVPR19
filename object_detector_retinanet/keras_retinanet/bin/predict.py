@@ -162,7 +162,7 @@ def main(image_folder_path: str, detection_save_folder: str, model_wights_path: 
     model = models.load_model(os.path.join(root_dir(), args.model), backbone_name=args.backbone, convert=args.convert_model, nms=False)
 
     # start prediction
-    predict(
+    detection_csv_results_file_path = predict(
         generator,
         model,
         score_threshold=args.score_threshold,
@@ -170,6 +170,7 @@ def main(image_folder_path: str, detection_save_folder: str, model_wights_path: 
         save_path = os.path.join(generator.base_dir, "detection_result_images"),
         hard_score_rate=hard_score_rate
     )
+    return detection_csv_results_file_path
 
 
 if __name__ == '__main__':
