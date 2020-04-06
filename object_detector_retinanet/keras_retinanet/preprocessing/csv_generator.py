@@ -62,57 +62,29 @@ def _read_classes(csv_reader):
     return result
 
 
-# def _read_images(base_dir):
 def _read_images(csv_and_images_dir):
 
-    # result = {}
-    # dirs = [os.path.join(base_dir, o) for o in os.listdir(base_dir) if os.path.isdir(os.path.join(base_dir, o))]
-    # if len(dirs) == 0:
-    #     dirs = ['']
-    # for project in dirs:
-    #     project_imgs = os.listdir(os.path.join(base_dir, project))
-    #     i = 0
-    #     print("Loading images...")
-    #     for image in  (project_imgs):
-    #         try:
-    #             img_file = os.path.join(base_dir, project, image)
-    #             # Check images exists
-    #             exists = os.path.isfile(img_file)
-                
-    #             if not exists:
-    #                 print("Warning: Image file {} is not existing".format(img_file))
-    #                 continue
-
-    #             # Image shape
-    #             height, width = get_image_size(img_file)
-    #             result[img_file] = {"width": width, "height": height}
-    #             i += 1
-    #             # if i == 10:
-    #             #     break
-    #         except Exception as e:
-    #             print("Error: {} in image: {}".format(str(e), img_file))
-    #             continue
-
     result = {}
-    project_imgs = os.listdir(csv_and_images_dir)
-
     print("Loading images...")
-    for image in project_imgs:
-        try:
-            img_file = os.path.join(csv_and_images_dir, image)
-            # Check images exists
-            exists = os.path.isfile(img_file)
-            
-            if not exists:
-                print("Warning: Image file {} is not existing".format(img_file))
-                continue
+    valid_formats = ['jpg', 'png', 'jpeg', 'tiff']
 
-            # Image shape
-            height, width = get_image_size(img_file)
-            result[img_file] = {"width": width, "height": height}
-        except Exception as e:
-            print("Error: {} in image: {}".format(str(e), img_file))
-            continue
+    for image in os.listdir(csv_and_images_dir):
+        if image.split('.')[-1] in valid_formats and image[0] is not '.':
+            try:
+                img_file = os.path.join(csv_and_images_dir, image)
+                # Check images exists
+                exists = os.path.isfile(img_file)
+                
+                if not exists:
+                    print("Warning: Image file {} is not existing".format(img_file))
+                    continue
+
+                # Image shape
+                height, width = get_image_size(img_file)
+                result[img_file] = {"width": width, "height": height}
+            except Exception as e:
+                print("Error: {} in image: {}".format(str(e), img_file))
+                continue
 
     return result
 

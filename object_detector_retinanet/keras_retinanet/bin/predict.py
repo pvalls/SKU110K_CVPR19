@@ -20,9 +20,9 @@ from object_detector_retinanet.utils import annotation_path, root_dir
 def get_session():
     """ Construct a modified tf session.
     """
-    config = tf.ConfigProto()
+    config = tf.compat.v1.ConfigProto()
     config.gpu_options.allow_growth = True
-    return tf.Session(config=config)
+    return tf.compat.v1.Session(config=config)
 
 
 def create_generator(args, image_folder_path):
@@ -55,11 +55,9 @@ def parse_args(args):
     pascal_parser = subparsers.add_parser('pascal')
     pascal_parser.add_argument('pascal_path', help='Path to dataset directory (ie. /tmp/VOCdevkit).')
 
-    
     parser.add_argument('--hard_score_rate', help='')
-
     parser.add_argument('--model', help='Path to RetinaNet model.')
-    parser.add_argument('--base_dir', help='Path to base dir for CSV file.')
+    parser.add_argument('--base_dir', help='Path to images folder')
     parser.add_argument('--convert-model',
                         help='Convert the model to an inference model (ie. the input is a training model).', type=int,
                         default=1)
@@ -91,16 +89,10 @@ def main(image_folder_path: str, detection_save_folder: str, model_wights_path: 
                        image_max_side = 1333,
                        args = None):
 
-    # parse arguments
+    # parse arguments, to fill args with parameters initialized from defaults
     if args is None:
-        # args = sys.argv[1:]
         args = ["--model", model_wights_path, 'csv']
-
     args = parse_args(args)
-
-    # fill args with function parameters initialized with defaults
-    # if args.annotations is None:
-    #     args.annotations = csv_file_path
 
     if args.hard_score_rate is None:
         args.hard_score_rate = hard_score_rate
@@ -108,28 +100,20 @@ def main(image_folder_path: str, detection_save_folder: str, model_wights_path: 
 
     if args.model is None:
         args.model = model_wights_path
-
     if args.base_dir is None:
         args.base_dir = image_folder_path
-
     if args.backbone is None:
         args.backbone = backbone
-
     if args.gpu is None:
         args.gpu = gpu
-
     if args.score_threshold is None:
         args.score_threshold = float(score_threshold)
-
     if args.iou_threshold is None:
         args.iou_threshold = float(iou_threshold)
-
     if args.save_path is None:
         args.save_path = detection_save_folder
-
     if args.image_max_side is None:
         args.image_max_side = int(image_max_side)
-
     if args.image_min_side is None:
         args.image_min_side = int(image_min_side)
 
@@ -167,12 +151,13 @@ def main(image_folder_path: str, detection_save_folder: str, model_wights_path: 
         model,
         score_threshold=args.score_threshold,
         # save_path=os.path.join(root_dir(), 'res_images_iou'),
-        save_path = os.path.join(generator.base_dir, "detection_result_images"),
-        hard_score_rate=hard_score_rate
-    )
+        image_save_path = os.path.join(args.save_path, "detection_results_images"),
+        results_save_path = args.save_path,
+        hard_score_rate=hard_score_rate)
+        
     return detection_csv_results_file_path
 
 
 if __name__ == '__main__':
 
-    main(str(), str(), str(),str(), args = sys.argv[1:])
+    main('', '', '', '', args = sys.argv[1:])
